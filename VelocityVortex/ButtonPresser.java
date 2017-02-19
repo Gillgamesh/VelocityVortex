@@ -1,5 +1,6 @@
 package org.firstinspires.ftc.teamcode.VelocityVortex;
 
+import com.qualcomm.robotcore.hardware.CRServo;
 import com.qualcomm.robotcore.hardware.ColorSensor;
 import com.qualcomm.robotcore.hardware.DcMotor;
 import com.qualcomm.robotcore.hardware.DcMotorSimple;
@@ -18,7 +19,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 public class ButtonPresser implements HardwareModule {
     //beacon presser servo
-    public Servo presser;
+    private CRServo presser;
+    //speed of presser
+    private double SPEED = 0.5;
+
 
     //the color sensor object has all methods for getting the color, while the core device interface provides auxiliary stuff
     private ColorSensor color;
@@ -29,19 +33,15 @@ public class ButtonPresser implements HardwareModule {
     // we assume that the LED pin of the RGB sensor is connected to
     // digital port 5 (zero indexed).
     static final int LED_CHANNEL = 5;
-    static final double REST     = 0  ;
-    static final int FULL = 6; //how long it can possibly extend out.
-    static final double ROTMOVE  = 1.0/FULL; //rotations per inch
-
-    //this stores the Hue-Saturation-Color Value information in hex
-    boolean isLEDon = true;
+    //should the LED be on?
+    boolean isLEDon = false;
 
 
     public void init(HardwareMap hmap) {
         HardwareMap hwMap = hmap;
         //first, map the given devices to reference variables:
         //servo:
-        presser = hwMap.servo.get("presser");
+        presser = hwMap.crservo.get("presser");
         //core device interface module:
         dim = hwMap.deviceInterfaceModule.get("cdim");
         //color sensor object:
@@ -55,6 +55,46 @@ public class ButtonPresser implements HardwareModule {
         //retract the servo:
         retract();
     }
+
+    //SET/GET SPEED:
+    public double getSpeed() {
+        return SPEED;
+    }
+    public void setSpeed(double speed) {
+        SPEED = speed;
+    }
+
+
+    //PRESS/RETRACT BUTTON:
+    public void press(double speed) {
+        presser.setDirection(DcMotorSimple.Direction.FORWARD);
+        presser.setPower(speed);
+    }
+
+    public void retract(double speed) {
+        presser.setDirection(DcMotorSimple.Direction.REVERSE);
+        presser.setPower(speed);
+    }
+
+    //    going for regular speed press/retract
+    public void press() {
+        press(SPEED);
+    }
+    public void retract() {
+        retract(SPEED);
+    }
+
+    public void stop() {
+
+    }
+
+
+    public void light(boolean b) {
+        isLEDon= b;
+        dim.setDigitalChannelState(LED_CHANNEL, isLEDon);
+    }
+
+
     //methods for color sensor itself:
 
     public boolean isRed() {
@@ -68,22 +108,8 @@ public class ButtonPresser implements HardwareModule {
 
     //control bringing the servo out:
 
-    //calculates how much you need to rotate the thing using a constant
-    public double distToRot(double inches) {
-        return inches * ROTMOVE;
-    }
-    public void press(double inches) {
-        presser.setPosition(inches);
-    }
-    //going for full press (6 inches):
-    public void press() {
-        press(FULL);
-    }
-    public void retract() {
-        presser.setPosition(REST);
+    public String getRGB() {
+        return "R:"+color.red()+"-G:"+color.green()+"-B:"+color.blue();
     }
 
-    public void stop() {
-
-    }
 }

@@ -15,12 +15,14 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Lift implements HardwareModule {
     //instance variables for motor/servo references
-    public DcMotor  lift        = null;
-    public Servo    armRight    = null;
-    public Servo    armLeft     = null;
+    private DcMotor  lift        = null;
+    private Servo    armRight    = null;
+    private Servo    armLeft     = null;
 
     //constants:
-    public final double ARM_REST = 1.0;
+    //adjust these 2 accordingly
+    public final double RIGHT_REST = 0.5;
+    public final double LEFT_REST = 0.5;
 
     public void init(HardwareMap hmap) {
         HardwareMap hwMap = hmap;
@@ -41,9 +43,13 @@ public class Lift implements HardwareModule {
         lift.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
 
         //SERVOS: These are side mountend in order to form an L bracket fork lift. They have to swing from rest position (0 or 1) to
+        //reverse the direction of the left servo.
+        armRight.setDirection(Servo.Direction.FORWARD);
+        armLeft.setDirection(Servo.Direction.REVERSE);
         //the middle position
-        armRight.setPosition(ARM_REST);
-        armLeft.setPosition(ARM_REST);
+        armRight.setPosition(RIGHT_REST);
+        armLeft.setPosition(LEFT_REST);
+
 
 
     }
@@ -53,6 +59,14 @@ public class Lift implements HardwareModule {
     //this method is empty because you do not want to release the servos from their position.
     public void stop() {
         lift.setPower(0);
+
+    }
+
+    //CONTROL ARMS:
+    //set the pos of the arm
+    public void moveArm(double offset) {
+        armRight.setPosition(RIGHT_REST+offset);
+        armLeft.setPosition(LEFT_REST+offset);
 
     }
 }

@@ -15,9 +15,13 @@ import com.qualcomm.robotcore.util.Range;
 
 public class Shooter implements HardwareModule {
 
+    //INSTANCE VARIABLES for speed
+    public int SHOOTER_SPEED = 1;
+    public int ACQ_SPEED = 1;
     //shooter motors
     public DcMotor shooterRight = null;
     public DcMotor shooterLeft  = null;
+    public DcMotor acq = null;
 
     public void init(HardwareMap map) {
         //save another reference
@@ -25,11 +29,12 @@ public class Shooter implements HardwareModule {
         //initiate motors
         shooterLeft = hwMap.dcMotor.get("lt_shoot");
         shooterRight = hwMap.dcMotor.get ("rt_shoot");
+        acq = hwMap.dcMotor.get("acq");
 
         //reverse direction based on polarity and location (one spins clockwise, the other counter)
 
-        shooterRight.setDirection((DcMotor.Direction.REVERSE));
-        shooterLeft.setDirection((DcMotor.Direction.REVERSE));
+        shooterRight.setDirection((DcMotor.Direction.FORWARD));
+        shooterLeft.setDirection((DcMotor.Direction.FORWARD));
 
 
 
@@ -53,6 +58,7 @@ public class Shooter implements HardwareModule {
     public void stop() {
         shooterLeft.setPower(0);
         shooterRight.setPower(0);
+        acq.setPower(0);
     }
 
     //turn on the shooter at a given power (without encoders)
@@ -66,7 +72,18 @@ public class Shooter implements HardwareModule {
         shoot(speed, speed);
     }
     public void shoot() {
-        shoot(1,1);
+        shoot(SHOOTER_SPEED,SHOOTER_SPEED);
+    }
+
+    //control speed of the acquirer to input clipped
+    public void acquire(double n) {
+        acq.setPower(Range.clip(n,-1,1));
+    }
+
+    public void autoFire(double shoot, double acquire) {
+        shoot(shoot);
+        acquire(acquire);
+
     }
 }
 

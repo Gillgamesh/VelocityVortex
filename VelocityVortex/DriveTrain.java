@@ -15,13 +15,21 @@ import com.qualcomm.robotcore.util.Range;
  */
 
 public class DriveTrain implements HardwareModule {
+    //CONSTANTS FOR ENCODERS:
+
+    static final double     TICKS_PER_REV    = 1240 ; //andymark neverest motors
+    static final double     DRIVE_GEAR_RATIO    = 1.0 ;
+    static final double     WHEEL_DIAMETER_INCHES   = 4.0 ;     // For figuring circumference
+    //how many ticks it takes to travel 1 inch.
+    static final double     TICKS_PER_INCH         = (TICKS_PER_REV * DRIVE_GEAR_RATIO) / (WHEEL_DIAMETER_INCHES * 3.1415);
+
     //Declare motors for drive train
     //left motors
-    public DcMotor  frontLeft   = null;
-    public DcMotor  backLeft    = null;
+    private DcMotor  frontLeft   = null;
+    private DcMotor  backLeft    = null;
     //right motors
-    public DcMotor  frontRight  = null;
-    public DcMotor  backRight   = null;
+    private DcMotor  frontRight  = null;
+    private DcMotor  backRight   = null;
     //initiate the hardware into the proper set up
     public void init(HardwareMap map) {
         HardwareMap hwMap = map;
@@ -45,6 +53,7 @@ public class DriveTrain implements HardwareModule {
         backLeft.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         frontRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
         backRight.setMode(DcMotor.RunMode.RUN_WITHOUT_ENCODER);
+
 
         //setPower to 0:
         frontLeft.setPower(0);
@@ -71,6 +80,7 @@ public class DriveTrain implements HardwareModule {
         frontLeft.setPower(Range.clip(fl,-1,1));
         backLeft.setPower(Range.clip(bl,-1,1));
         frontRight.setPower(Range.clip(fr,-1,1));
+        
         backRight.setPower(Range.clip(br,-1,1));
     }
     public void drive(double left, double right) {
@@ -79,6 +89,20 @@ public class DriveTrain implements HardwareModule {
     public void drive(double speed) {
         drive(speed, speed, speed, speed);
     }
+
+    //drive the bot a certain amount of inches forward
+    public void posDrive(int left, int right) {
+        //first, find out the distance that needs to be travelled in ticks, as the answer is in inches
+        int rtTicks = (int) (TICKS_PER_INCH * right);
+        int ltTicks = (int) (TICKS_PER_INCH * left);
+        frontLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backLeft.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        frontRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+        backRight.setMode(DcMotor.RunMode.RUN_TO_POSITION);
+
+    }
+
+
 
 
 }

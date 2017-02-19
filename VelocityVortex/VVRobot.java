@@ -12,12 +12,12 @@ import com.qualcomm.robotcore.util.ElapsedTime;
  */
 
 public class VVRobot {
-    public DriveTrain dt    = null;
-    public Shooter sh       = null;
-    public Lift lift        = null;
-    public ButtonPresser bp = null;
+    public DriveTrain dt    = new DriveTrain();
+    public Shooter sh       = new Shooter();
+    public Lift lift        = new Lift();
+    public ButtonPresser bp = new ButtonPresser();
     //add all elements to initiate them.
-    public HardwareModule[] parts = {dt, sh};
+    public HardwareModule[] parts = {sh};
 
     public void init(HardwareMap hwMap) {
         for (HardwareModule part: parts) part.init(hwMap);
