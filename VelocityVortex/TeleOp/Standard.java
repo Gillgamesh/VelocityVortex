@@ -1,7 +1,6 @@
 package org.firstinspires.ftc.teamcode.VelocityVortex.TeleOp;
 
 import com.qualcomm.robotcore.eventloop.opmode.OpMode;
-import com.qualcomm.robotcore.eventloop.opmode.OpMode;
 import com.qualcomm.robotcore.eventloop.opmode.TeleOp;
 import com.qualcomm.robotcore.util.Range;
 
@@ -53,9 +52,9 @@ public class Standard extends OpMode {
 
         //DRIVER 1:
         //sticks are inverted by default
-        left = -1* ControlMath.sensAdjust(gamepad1.left_stick_y);
-        right = -1 * ControlMath.sensAdjust(gamepad1.right_stick_y);
-        shooter = ControlMath.sensAdjust(gamepad1.right_trigger);
+        left = -1* RoboMath.sensAdjust(gamepad1.left_stick_y);
+        right = -1 * RoboMath.sensAdjust(gamepad1.right_stick_y);
+        shooter = RoboMath.sensAdjust(gamepad1.right_trigger);
         //servo offset:
         if (gamepad1.a) armOff+=0.025;
         if (gamepad1.b) armOff-=0.025;
@@ -63,7 +62,7 @@ public class Standard extends OpMode {
 
 
         //DRIVER 2:
-        acq = ControlMath.sensAdjust(gamepad2.right_trigger-gamepad2.left_trigger);
+        acq = RoboMath.sensAdjust(gamepad2.right_trigger-gamepad2.left_trigger);
 
 
 
@@ -93,7 +92,7 @@ public class Standard extends OpMode {
         telemetry.addData("right", "%.2f", right);
         telemetry.addData("shooter", "%.2f", shooter);
         telemetry.addData("color", "%s", robot.bp.getRGB());
-
+        telemetry.update();
 
     }
     /*

@@ -21,7 +21,7 @@ public class ButtonPresser implements HardwareModule {
     //beacon presser servo
     private CRServo presser;
     //speed of presser
-    private double SPEED = 0.5;
+    private double SPEED = 0.25;
 
 
     //the color sensor object has all methods for getting the color, while the core device interface provides auxiliary stuff
@@ -34,7 +34,7 @@ public class ButtonPresser implements HardwareModule {
     // digital port 5 (zero indexed).
     static final int LED_CHANNEL = 5;
     //should the LED be on?
-    boolean isLEDon = false;
+    boolean isLEDon = true;
 
 
     public void init(HardwareMap hmap) {
@@ -49,11 +49,10 @@ public class ButtonPresser implements HardwareModule {
 
         //turn the sensor's LED on:
         //i.e.: for the core device module, set the LED channel to true so it shows.
+        dim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
         dim.setDigitalChannelState(LED_CHANNEL, isLEDon);
-
-
-        //retract the servo:
-        retract();
+        //set the speed of the servo to 0.
+        setSpeed(0);
     }
 
     //SET/GET SPEED:
@@ -85,7 +84,7 @@ public class ButtonPresser implements HardwareModule {
     }
 
     public void stop() {
-
+        presser.setPower(0);
     }
 
 
@@ -98,10 +97,10 @@ public class ButtonPresser implements HardwareModule {
     //methods for color sensor itself:
 
     public boolean isRed() {
-        return (color.red() > color.blue());
+        return (color.red()  > color.blue());
     }
     public boolean isBlue() {
-        return (color.blue() > color.red());
+        return (color.blue()> color.red());
     }
 
 
