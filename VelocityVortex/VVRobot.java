@@ -17,7 +17,7 @@ public class VVRobot {
     public Lift lift        = new Lift();
     public ButtonPresser bp = new ButtonPresser();
     //add all elements to initiate them.
-    public HardwareModule[] parts = {sh};
+    public HardwareModule[] parts = {sh,dt,lift,bp};
 
     public void init(HardwareMap hwMap) {
         for (HardwareModule part: parts) part.init(hwMap);

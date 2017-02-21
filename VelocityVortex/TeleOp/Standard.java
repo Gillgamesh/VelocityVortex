@@ -57,7 +57,7 @@ public class Standard extends OpMode {
         shooter = RoboMath.sensAdjust(gamepad1.right_trigger);
         //servo offset:
         if (gamepad1.a) armOff+=0.025;
-        if (gamepad1.b) armOff-=0.025;
+        if (gamepad1.y) armOff-=0.025;
         armOff = Range.clip(armOff,-0.5,0.5);
 
 
@@ -70,7 +70,7 @@ public class Standard extends OpMode {
 
         //CONTROLLING THE ROBOT:
         //Drivetrain:
-        //robot.dt.drive(left, right);
+        robot.dt.drive(left, right);
 
         //Shooter/acq:
         robot.sh.shoot(shooter);
@@ -82,7 +82,6 @@ public class Standard extends OpMode {
         robot.lift.moveArm(armOff);
 
         //button presser:
-//        robot.bp.press();
 
 
 
