@@ -44,8 +44,8 @@ public class Lift implements HardwareModule {
 
         //SERVOS: These are side mountend in order to form an L bracket fork lift. They have to swing from rest position (0 or 1) to
         //reverse the direction of the left servo.
-        armRight.setDirection(Servo.Direction.FORWARD);
-        armLeft.setDirection(Servo.Direction.REVERSE);
+        armRight.setDirection(Servo.Direction.REVERSE);
+        armLeft.setDirection(Servo.Direction.FORWARD);
         //the middle position
         armRight.setPosition(RIGHT_REST);
         armLeft.setPosition(LEFT_REST);

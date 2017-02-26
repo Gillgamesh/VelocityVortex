@@ -7,6 +7,7 @@ import com.qualcomm.robotcore.hardware.DcMotorSimple;
 import com.qualcomm.robotcore.hardware.DeviceInterfaceModule;
 import com.qualcomm.robotcore.hardware.HardwareMap;
 import com.qualcomm.robotcore.hardware.Servo;
+import com.qualcomm.robotcore.util.ElapsedTime;
 import com.qualcomm.robotcore.util.Range;
 import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
@@ -19,9 +20,10 @@ import com.qualcomm.robotcore.hardware.DigitalChannelController;
 
 public class ButtonPresser implements HardwareModule {
     //beacon presser servo
-    private CRServo presser;
+    private Servo presser;
     //speed of presser
-    private double SPEED = 0.25;
+    private double SPEED = 0.135;
+    private double REST_OFF = 0.865;
 
 
     //the color sensor object has all methods for getting the color, while the core device interface provides auxiliary stuff
@@ -41,7 +43,7 @@ public class ButtonPresser implements HardwareModule {
         HardwareMap hwMap = hmap;
         //first, map the given devices to reference variables:
         //servo:
-        presser = hwMap.crservo.get("presser");
+        presser = hwMap.servo.get("presser");
         //core device interface module:
         dim = hwMap.deviceInterfaceModule.get("cdim");
         //color sensor object:
@@ -52,12 +54,14 @@ public class ButtonPresser implements HardwareModule {
         dim.setDigitalChannelMode(LED_CHANNEL, DigitalChannelController.Mode.OUTPUT);
         dim.setDigitalChannelState(LED_CHANNEL, isLEDon);
         //set the speed of the servo to 0.
-        setSpeed(0);
+        presser.setDirection(Servo.Direction.FORWARD);
+        setSpeed(0.5);
+        stop();
     }
 
     //SET/GET SPEED:
     public double getSpeed() {
-        return SPEED;
+        return presser.getPosition();
     }
     public void setSpeed(double speed) {
         SPEED = speed;
@@ -66,13 +70,11 @@ public class ButtonPresser implements HardwareModule {
 
     //PRESS/RETRACT BUTTON:
     public void press(double speed) {
-        presser.setDirection(DcMotorSimple.Direction.FORWARD);
-        presser.setPower(speed);
+        presser.setPosition(REST_OFF+speed);
     }
 
     public void retract(double speed) {
-        presser.setDirection(DcMotorSimple.Direction.REVERSE);
-        presser.setPower(speed);
+        presser.setPosition(REST_OFF-speed);
     }
 
     //    going for regular speed press/retract
@@ -83,8 +85,30 @@ public class ButtonPresser implements HardwareModule {
         retract(SPEED);
     }
 
+    public void autoPress(double speed, double time) {
+        ElapsedTime runtime = new ElapsedTime();
+        press(speed);
+        while (runtime.seconds() < time) {
+
+        }
+        stop();
+    }
+    public void autoPress(double time) {
+        autoPress(SPEED, time);
+    }
+    public void autoRetract(double speed, double time) {
+        ElapsedTime runtime = new ElapsedTime();
+        retract(speed);
+        while (runtime.seconds() < time) {
+
+        }
+        stop();
+
+    }
+
     public void stop() {
-        presser.setPower(0);
+        presser.setPosition(REST_OFF);
+
     }
 
 

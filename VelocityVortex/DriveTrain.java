@@ -136,10 +136,10 @@ public class DriveTrain implements HardwareModule {
         while (program.opModeIsActive() &&
                 (frontRight.isBusy() && frontLeft.isBusy() && backRight.isBusy() && backLeft.isBusy()) &&
                 (runtime.seconds() < timeout)) {
-            frontRight.setPower(RoboMath.gradualSpeed(frontRight.getCurrentPosition(),rtTicks));
-            frontLeft.setPower(RoboMath.gradualSpeed(frontLeft.getCurrentPosition(),ltTicks));
-            backRight.setPower(RoboMath.gradualSpeed(backRight.getCurrentPosition(),rtTicks));
-            backLeft.setPower(RoboMath.gradualSpeed(backLeft.getCurrentPosition(),ltTicks));
+            frontRight.setPower(max_speed * RoboMath.gradualSpeed(frontRight.getCurrentPosition(),rtTicks));
+            frontLeft.setPower(max_speed * RoboMath.gradualSpeed(frontLeft.getCurrentPosition(),ltTicks));
+            backRight.setPower(max_speed * RoboMath.gradualSpeed(backRight.getCurrentPosition(),rtTicks));
+            backLeft.setPower(max_speed * RoboMath.gradualSpeed(backLeft.getCurrentPosition(),ltTicks));
 
             //telemetry:
 

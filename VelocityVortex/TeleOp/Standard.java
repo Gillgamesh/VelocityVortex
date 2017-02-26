@@ -20,8 +20,9 @@ public class Standard extends OpMode {
     double shooter;
     double acq;
     double bp;
+    double lift;
     //servo position
-    double armOff = 0.5;
+    double armOff = 0.0;
 
     /*
  * Code to run ONCE when the driver hits INIT
@@ -55,15 +56,16 @@ public class Standard extends OpMode {
         left = -1* RoboMath.sensAdjust(gamepad1.left_stick_y);
         right = -1 * RoboMath.sensAdjust(gamepad1.right_stick_y);
         shooter = RoboMath.sensAdjust(gamepad1.right_trigger);
+        bp = -1 * RoboMath.sensAdjust(gamepad2.right_stick_y);
+        acq = RoboMath.sensAdjust(gamepad1.left_trigger);
         //servo offset:
-        if (gamepad1.a) armOff+=0.025;
-        if (gamepad1.y) armOff-=0.025;
+        if (gamepad2.a) armOff+=0.025;
+        if (gamepad2.y) armOff-=0.025;
         armOff = Range.clip(armOff,-0.5,0.5);
 
 
         //DRIVER 2:
-        acq = RoboMath.sensAdjust(gamepad2.right_trigger-gamepad2.left_trigger);
-
+        lift = gamepad2.right_trigger-gamepad2.left_trigger;
 
 
 
@@ -76,12 +78,15 @@ public class Standard extends OpMode {
         robot.sh.shoot(shooter);
         robot.sh.acquire(acq);
 
-        //servos:
+        //lift:
+        robot.lift.moveUp(lift);
 
         //lift arm:
         robot.lift.moveArm(armOff);
 
+
         //button presser:
+        robot.bp.press(bp);
 
 
 
@@ -91,6 +96,7 @@ public class Standard extends OpMode {
         telemetry.addData("right", "%.2f", right);
         telemetry.addData("shooter", "%.2f", shooter);
         telemetry.addData("color", "%s", robot.bp.getRGB());
+        telemetry.addData("bp", "%s", bp);
         telemetry.update();
 
     }
